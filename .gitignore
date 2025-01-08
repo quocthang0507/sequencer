@@ -116,9 +116,6 @@ work_dirs/
 /data
 mmedit/.mim
 
-# Pytorch
-*.pth
-
 # onnx and tensorrt
 *.onnx
 *.trt

@@ -3,7 +3,6 @@
 
 [![NeurIPS 2022](https://img.shields.io/badge/NeuIPS-2022-373737.svg?style=plastic&labelColor=5779eb)](https://nips.cc/Conferences/2022/Schedule?showEvent=55158)
 [![arXiv](https://img.shields.io/badge/arXiv-2205.01972-b31b1b.svg?style=plastic)](https://arxiv.org/abs/2205.01972)
-[![Support Ukraine](https://img.shields.io/badge/Support-Ukraine-FFD500?style=plastic&labelColor=005BBB)](https://opensource.fb.com/support-ukraine)
 
 Created by
 * [Yuki Tatsunami](https://okojoalg.github.io/) 
