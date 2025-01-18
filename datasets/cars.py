@@ -19,7 +19,7 @@ class StanfordCars(VisionDataset):
     base_folder = 'stanford_cars'
 
     urls = {
-        "train": "http://ai.stanford.edu/~jkrause/car196/cars_train.tgz",
+        "train": "https://ai.stanford.edu/~jkrause/car196/cars_train.tgz",
         "test": "http://ai.stanford.edu/~jkrause/car196/cars_test.tgz",
         "devkit": "https://ai.stanford.edu/~jkrause/cars/car_devkit.tgz",
         "test_anno": "http://ai.stanford.edu/~jkrause/car196/cars_test_annos_withlabels.mat",

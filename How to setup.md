@@ -31,8 +31,14 @@ Update ClearML:
 pip install --upgrade clearml
 ```
 
-Train the model:
+Download the dataset and train the model:
 
 ```
-python train.py E:\GitHub\sequencer\datasets --dataset  --dataset-download --model sequencer2d_s -b 256 -j 8 --opt adamw --epochs 300 --sched cosine --native-amp --img-size 224 --drop-path 0.1 --lr 2e-3 --weight-decay 0.05 --remode pixel --reprob 0.25 --aa rand-m9-mstd0.5-inc1 --smoothing 0.1 --mixup 0.8 --cutmix 1.0 --warmup-lr 1e-6 --warmup-epochs 20
+python train.py E:\GitHub\sequencer\datasets --dataset torch/flowers --dataset-download --model sequencer2d_s -b 8 -j 8 --opt adamw --epochs 300 --sched cosine --native-amp --img-size 128 --drop-path 0.1 --lr 2e-3 --weight-decay 0.05 --remode pixel --reprob 0.25 --aa rand-m9-mstd0.5-inc1 --smoothing 0.1 --mixup 0.8 --cutmix 1.0 --warmup-lr 1e-6 --warmup-epochs 20
+```
+
+Train the model with the existed dataset:
+
+```
+python train.py E:\GitHub\sequencer\datasets\102flowers --model sequencer2d_s -b 16 -j 4 --opt adamw --epochs 300 --sched cosine --native-amp --img-size 128 --drop-path 0.1 --lr 2e-3 --weight-decay 0.05 --remode pixel --reprob 0.25 --aa rand-m9-mstd0.5-inc1 --smoothing 0.1 --mixup 0.8 --cutmix 1.0 --warmup-lr 1e-6 --warmup-epochs 20
 ```

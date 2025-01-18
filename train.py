@@ -44,6 +44,8 @@ import utils.timm.summary as sm
 import utils.timm.checkpoint_saver as cs
 from utils.timm.dataset_factory import create_dataset
 
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
 try:
     from apex import amp
     from apex.parallel import DistributedDataParallel as ApexDDP

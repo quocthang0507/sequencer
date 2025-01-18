@@ -121,5 +121,12 @@ class Flowers102(VisionDataset):
             path = path.strip()
             path = path.rstrip("/")
             os.makedirs(path, exist_ok=True)
-            os.rename(os.path.join(self.root, self.source, filename),
-                      os.path.join(dst, str(cls), filename))
+
+            source_file = os.path.join(self.root, self.source, filename)
+            destination_file = os.path.join(dst, str(cls), filename)
+
+            # Check if the destination file already exists
+            if not os.path.exists(destination_file):
+                os.rename(source_file, destination_file)
+            else:
+                print(f'File {destination_file} already exists. Skipping...')
