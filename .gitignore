@@ -127,3 +127,12 @@ mmedit/.mim
 *.mar
 .DS_Store
 clearml.conf
+
+# Datasets
+/datasets/102flowers
+/datasets/stanford_cars
+
+#Output
+Output/
+
+*.pth
