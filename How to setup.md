@@ -6,7 +6,7 @@ pip3 install torch torchvision torchaudio --index-url https://download.pytorch.o
 
 Install VC++ Build Tools: [https://github.com/bycloudai/InstallVSBuildToolsWindows](https://github.com/bycloudai/InstallVSBuildToolsWindows)
 
-Install [cuda_12.4.0_551.61_windows](https://developer.download.nvidia.com/compute/cuda/12.6.3/local_installers/cuda_12.6.3_561.17_windows.exe)
+Install [cuda_12.4.0_551.61_windows](https://developer.download.nvidia.com/compute/cuda/12.4.0/local_installers/cuda_12.4.0_551.61_windows.exe)
 
 Download [cudnn-windows-x86_64-9.6.0.74_cuda12-archive](https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/windows-x86_64/cudnn-windows-x86_64-9.6.0.74_cuda12-archive.zip), and unpack it, copy `<CUDNN_zip_files_path>\cuda\bin\cudnn64_9.dll` to `<YOUR_DRIVE>\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin`.
 
