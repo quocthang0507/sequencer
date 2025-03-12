@@ -1,3 +1,18 @@
+Install Python 3.11
+
+```
+sudo add-apt-repository ppa:deadsnakes/ppa -y
+sudo apt update
+sudo apt install python3.11
+```
+
+Create a virtual environment:
+
+```
+virtualenv venv --python=python3.11
+pip install --upgrade pip
+```
+
 Install torch:
 
 ```
