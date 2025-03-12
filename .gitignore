@@ -129,8 +129,7 @@ mmedit/.mim
 clearml.conf
 
 # Datasets
-/datasets/102flowers
-/datasets/stanford_cars
+datasets/
 
 #Output
 Output/

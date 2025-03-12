@@ -1,35 +1,25 @@
 import argparse
-import time
-import yaml
-import os
 import logging
-from collections import OrderedDict
-
+import os
 from contextlib import suppress
 from datetime import datetime
 
-import torch
 import torch.nn as nn
-import torchvision.utils
-from torch.nn.parallel import DistributedDataParallel as NativeDDP
-
+import yaml
 from timm.data import create_loader, resolve_data_config, Mixup, FastCollateMixup, AugMixDataset
-from timm.models import create_model, safe_model_name, resume_checkpoint, load_checkpoint, \
-    convert_splitbn_model, model_parameters
-from timm.utils import *
 from timm.loss import *
+from timm.models import create_model, safe_model_name, resume_checkpoint, load_checkpoint
+from timm.models.layers import convert_splitbn_model
 from timm.optim import create_optimizer_v2, optimizer_kwargs
 from timm.scheduler import create_scheduler
+from timm.utils import *
 from timm.utils import ApexScaler, NativeScaler
+from torch.nn.parallel import DistributedDataParallel as NativeDDP
 
-import models
-import utils.timm.summary as sm
 import utils.timm.checkpoint_saver as cs
-from utils.timm.dataset_factory import create_dataset
-
+import utils.timm.summary as sm
 from train import train_one_epoch, validate
-
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+from utils.timm.dataset_factory import create_dataset
 
 try:
     from apex import amp
@@ -40,12 +30,12 @@ try:
 except ImportError:
     has_apex = False
 
-has_native_amp = False
 try:
-    if getattr(torch.cuda.amp, 'autocast') is not None:
-        has_native_amp = True
-except AttributeError:
-    pass
+    import clearml
+
+    has_clearml = True
+except ImportError:
+    has_clearml = False
 
 try:
     import wandb
@@ -54,20 +44,23 @@ try:
 except ImportError:
     has_wandb = False
 
-try:
-    import clearml
-
-    has_clearml = True
-except ImportError:
-    has_clearml = False
-
-torch.backends.cudnn.benchmark = True
+must_download = False
+device = "cpu"  # cuda:0cuda:0
 _logger = logging.getLogger('train')
+has_native_amp = False
+
 
 def _parse_args():
     # Directly assign the values from the statement
     args = argparse.Namespace()
-    args.data_dir = "E:\\GitHub\\sequencer\\datasets\\102flowers"
+    if must_download:
+        args.data_dir = "C:/Users/thanglq/Documents/GitHub/sequencer/datasets"
+        args.dataset = "torch/flowers"
+        args.dataset_download = True
+    else:
+        args.data_dir = "C:/Users/thanglq/Documents/GitHub/sequencer/datasets/102flowers"
+        args.dataset = ""
+        args.dataset_download = False
     args.model = "sequencer2d_s"
     args.batch_size = 16
     args.workers = 4
@@ -89,12 +82,14 @@ def _parse_args():
     args.warmup_epochs = 20
 
     # Additional default values
+    args.recount = 1
+    args.pretrained = False
     args.local_rank = 0
     args.log_wandb = False
     args.log_clearml = False
     args.no_prefetcher = False
     args.distributed = False
-    args.device = 'cuda:0'
+    args.device = device
     args.world_size = 1
     args.rank = 0
     args.prefetcher = not args.no_prefetcher
@@ -123,10 +118,8 @@ def _parse_args():
     args.apex_amp = False
     args.no_ddp_bb = False
     args.pin_mem = False
-    args.dataset = ''
     args.train_split = 'train'
     args.val_split = 'validation'
-    args.dataset_download = False
     args.class_map = ''
     args.opt_eps = None
     args.opt_betas = None
@@ -186,27 +179,10 @@ def main():
     setup_default_logging()
     args, args_text = _parse_args()
 
-    if args.local_rank == 0:
-        if args.log_wandb:
-            if has_wandb:
-                wandb.init(project=args.experiment, config=args)
-            else:
-                _logger.warning("You've requested to log metrics to wandb but package not found. "
-                                "Metrics not being logged to wandb, try `pip install wandb`")
-        if args.log_clearml:
-            if has_clearml:
-                task = clearml.Task.init(project_name=args.experiment,
-                                         task_name=args.task_name,
-                                         output_uri=args.output_uri)
-            else:
-                _logger.warning("You've requested to log metrics to clearml but package not found. "
-                                "Metrics not being logged to clearml, try `pip install clearml`")
-
     args.prefetcher = not args.no_prefetcher
     args.distributed = False
     if 'WORLD_SIZE' in os.environ:
         args.distributed = int(os.environ['WORLD_SIZE']) > 1
-    args.device = 'cuda:0'
     args.world_size = 1
     args.rank = 0  # global rank
     if args.distributed:
@@ -238,9 +214,6 @@ def main():
                         "Install NVIDA apex or upgrade to PyTorch 1.6")
 
     random_seed(args.seed, args.rank)
-
-    if args.fuser:
-        set_jit_fuser(args.fuser)
 
     model = create_model(
         args.model,
@@ -276,8 +249,10 @@ def main():
         assert num_aug_splits > 1 or args.resplit
         model = convert_splitbn_model(model, max(num_aug_splits, 2))
 
-    # move model to GPU, enable channels last layout if set
-    model.cuda()
+    if device == "cpu":
+        model.cpu()
+    elif device == "cuda:0":
+        model.gpu()
     if args.channels_last:
         model = model.to(memory_format=torch.channels_last)
 
@@ -512,7 +487,8 @@ def main():
                 if args.distributed and args.dist_bn in ('broadcast', 'reduce'):
                     distribute_bn(model_ema, args.world_size, args.dist_bn == 'reduce')
                 ema_eval_metrics = validate(
-                    model_ema.module, loader_eval, validate_loss_fn, args, amp_autocast=amp_autocast, log_suffix=' (EMA)')
+                    model_ema.module, loader_eval, validate_loss_fn, args, amp_autocast=amp_autocast,
+                    log_suffix=' (EMA)')
                 eval_metrics = ema_eval_metrics
 
             if lr_scheduler is not None:
@@ -522,7 +498,8 @@ def main():
             if output_dir is not None:
                 sm.update_summary(
                     epoch, train_metrics, eval_metrics, os.path.join(output_dir, 'summary.csv'),
-                    write_header=best_metric is None, log_wandb=args.log_wandb and has_wandb, log_clearml=args.log_clearml and has_clearml)
+                    write_header=best_metric is None, log_wandb=args.log_wandb and has_wandb,
+                    log_clearml=args.log_clearml and has_clearml)
 
             if saver is not None:
                 # save proper checkpoint with eval metric
@@ -533,6 +510,7 @@ def main():
         pass
     if best_metric is not None:
         _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
+
 
 if __name__ == '__main__':
     main()
