@@ -57,6 +57,7 @@ class LSTM(RNNBase):
     def __init__(self, input_size, hidden_size=None,
                  num_layers: int = 1, bias: bool = True, bidirectional: bool = True):
         super().__init__(input_size, hidden_size, num_layers, bias, bidirectional)
+        # Khởi tạo lớp LSTM với các tham số đầu vào
         self.rnn = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True,
                            bias=bias, bidirectional=bidirectional)
 
@@ -79,13 +80,17 @@ class RNN2DBase(nn.Module):
 
         if with_fc:
             if union == "cat":
+                # Nếu union là "cat", khởi tạo lớp fully connected với kích thước đầu ra gấp đôi
                 self.fc = nn.Linear(2 * self.output_size, input_size)
             elif union == "add":
+                # Nếu union là "add", khởi tạo lớp fully connected với kích thước đầu ra bằng kích thước đầu vào
                 self.fc = nn.Linear(self.output_size, input_size)
             elif union == "vertical":
+                # Nếu union là "vertical", khởi tạo lớp fully connected và chỉ sử dụng hướng dọc
                 self.fc = nn.Linear(self.output_size, input_size)
                 self.with_horizontal = False
             elif union == "horizontal":
+                # Nếu union là "horizontal", khởi tạo lớp fully connected và chỉ sử dụng hướng ngang
                 self.fc = nn.Linear(self.output_size, input_size)
                 self.with_vertical = False
             else:
@@ -116,6 +121,7 @@ class RNN2DBase(nn.Module):
         B, H, W, C = x.shape
 
         if self.with_vertical:
+            # Xử lý hướng dọc
             v = x.permute(0, 2, 1, 3)
             v = v.reshape(-1, H, C)
             v, _ = self.rnn_v(v)
@@ -123,14 +129,17 @@ class RNN2DBase(nn.Module):
             v = v.permute(0, 2, 1, 3)
 
         if self.with_horizontal:
+            # Xử lý hướng ngang
             h = x.reshape(-1, W, C)
             h, _ = self.rnn_h(h)
             h = h.reshape(B, H, W, -1)
 
         if self.with_vertical and self.with_horizontal:
             if self.union == "cat":
+                # Kết hợp theo chiều kênh
                 x = torch.cat([v, h], dim=-1)
             else:
+                # Kết hợp bằng cách cộng
                 x = v + h
         elif self.with_vertical:
             x = v
@@ -138,6 +147,7 @@ class RNN2DBase(nn.Module):
             x = h
 
         if self.with_fc:
+            # Áp dụng lớp fully connected nếu có
             x = self.fc(x)
 
         return x
