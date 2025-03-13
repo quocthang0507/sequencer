@@ -82,6 +82,7 @@ def _parse_args():
     args.warmup_epochs = 20
 
     # Additional default values
+    args.validation_batch_size = None
     args.recount = 1
     args.pretrained = False
     args.local_rank = 0
