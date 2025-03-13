@@ -62,13 +62,13 @@ def _parse_args():
         args.dataset = ""
         args.dataset_download = False
     args.model = "sequencer2d_s"
-    args.batch_size = 16
-    args.workers = 2
+    args.batch_size = 16 # default = 256
+    args.workers = 2 # default = 4
     args.opt = "adamw"
     args.epochs = 300
     args.sched = "cosine"
     args.native_amp = True
-    args.img_size = 128
+    args.img_size = 128 # default = 224
     args.drop_path = 0.1
     args.lr = 2e-3
     args.weight_decay = 0.05
