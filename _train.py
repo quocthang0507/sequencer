@@ -63,7 +63,7 @@ def _parse_args():
         args.dataset_download = False
     args.model = "sequencer2d_s"
     args.batch_size = 16
-    args.workers = 4
+    args.workers = 2
     args.opt = "adamw"
     args.epochs = 300
     args.sched = "cosine"
