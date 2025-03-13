@@ -44,8 +44,8 @@ try:
 except ImportError:
     has_wandb = False
 
-must_download = False
-device = "cpu"  # cuda:0cuda:0
+must_download = True
+device = "cuda:0"  # cuda:0 | cpu
 _logger = logging.getLogger('train')
 has_native_amp = False
 
@@ -54,11 +54,11 @@ def _parse_args():
     # Directly assign the values from the statement
     args = argparse.Namespace()
     if must_download:
-        args.data_dir = "C:/Users/thanglq/Documents/GitHub/sequencer/datasets"
+        args.data_dir = "sequencer/datasets"
         args.dataset = "torch/flowers"
         args.dataset_download = True
     else:
-        args.data_dir = "C:/Users/thanglq/Documents/GitHub/sequencer/datasets/102flowers"
+        args.data_dir = "sequencer/datasets/102flowers"
         args.dataset = ""
         args.dataset_download = False
     args.model = "sequencer2d_s"
@@ -252,7 +252,7 @@ def main():
     if device == "cpu":
         model.cpu()
     elif device == "cuda:0":
-        model.gpu()
+        model.cuda()
     if args.channels_last:
         model = model.to(memory_format=torch.channels_last)
 
