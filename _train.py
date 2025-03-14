@@ -62,13 +62,13 @@ def _parse_args():
         args.dataset = ""  # Dataset name
         args.dataset_download = False  # Flag to download the dataset
     args.model = "sequencer2d_s"  # Model name
-    args.batch_size = 16  # Batch size for training
-    args.workers = 2  # Number of data loading workers
+    args.batch_size = 16  # Batch size for training, default = 256
+    args.workers = 2  # Number of data loading workers, default = 4
     args.opt = "adamw"  # Optimizer type
     args.epochs = 300  # Number of epochs to train
     args.sched = "cosine"  # Learning rate scheduler type
     args.native_amp = True  # Use native automatic mixed precision
-    args.img_size = 128  # Image size
+    args.img_size = 128  # Image size, default = 224
     args.drop_path = 0.1  # Drop path rate
     args.lr = 2e-3  # Learning rate
     args.weight_decay = 0.05  # Weight decay
