@@ -4,15 +4,13 @@ An inference and train step benchmark script for timm models.
 Hacked together by Ross Wightman (https://github.com/rwightman)
 """
 import argparse
-import os
-import csv
 import json
 import time
 import logging
 import torch
 import torch.nn as nn
 import torch.nn.parallel
-import benchmark
+from benchmark import *
 from collections import OrderedDict
 from contextlib import suppress
 from functools import partial
@@ -87,66 +85,6 @@ def _parse_args():
     args.drop_path = None  # Drop path rate (default: None)
     args.drop_block = None  # Drop block rate (default: None)
     return args
-
-
-def main():
-    setup_default_logging()
-    args = _parse_args()
-    model_cfgs = []
-    model_names = []
-
-    if args.model_list:
-        args.model = ''
-        with open(args.model_list) as f:
-            model_names = [line.rstrip() for line in f]
-        model_cfgs = [(n, None) for n in model_names]
-    elif args.model == 'all':
-        # validate all models in a list of names with pretrained checkpoints
-        args.pretrained = True
-        model_names = list_models(pretrained=True, exclude_filters=['*in21k'])
-        model_cfgs = [(n, None) for n in model_names]
-    elif not is_model(args.model):
-        # model name doesn't exist, try as wildcard filter
-        model_names = list_models(args.model)
-        model_cfgs = [(n, None) for n in model_names]
-
-    if len(model_cfgs):
-        results_file = args.results_file or './benchmark.csv'
-        _logger.info('Running bulk validation on these pretrained models: {}'.format(', '.join(model_names)))
-        results = []
-        try:
-            for m, _ in model_cfgs:
-                if not m:
-                    continue
-                args.model = m
-                r = benchmark(args)
-                if r:
-                    results.append(r)
-                time.sleep(10)
-        except KeyboardInterrupt as e:
-            pass
-        sort_key = 'infer_samples_per_sec'
-        if 'train' in args.bench:
-            sort_key = 'train_samples_per_sec'
-        elif 'profile' in args.bench:
-            sort_key = 'infer_gmacs'
-        results = sorted(results, key=lambda x: x[sort_key], reverse=True)
-        if len(results):
-            write_results(results_file, results)
-    else:
-        results = benchmark(args)
-    json_str = json.dumps(results, indent=4)
-    print(json_str)
-
-
-def write_results(results_file, results):
-    with open(results_file, mode='w') as cf:
-        dw = csv.DictWriter(cf, fieldnames=results[0].keys())
-        dw.writeheader()
-        for r in results:
-            dw.writerow(r)
-        cf.flush()
-
 
 if __name__ == '__main__':
     main()
