@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ Checkpoint Cleaning Script
 Takes training checkpoints with GPU tensors, optimizer state, extra dict keys, etc.
-and outputs a CPU  tensor checkpoint with only the `state_dict` along with SHA256
+and outputs a CPU tensor checkpoint with only the `state_dict` along with SHA256
 calculation for model zoo compatibility.
 Hacked together by / Copyright 2020 Ross Wightman (https://github.com/rwightman)
 """

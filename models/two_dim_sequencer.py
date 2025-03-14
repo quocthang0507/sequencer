@@ -293,6 +293,7 @@ def sequencer2d_l_392(pretrained=False, **kwargs):
 
 @register_model
 def sequencer2d_s_unidirectional(pretrained=False, **kwargs):
+    '''Ablation experiment: unidirectional LSTM'''
     model_args = dict(
         layers=[4, 3, 8, 3],
         patch_sizes=[7, 2, 1, 1],
@@ -327,6 +328,7 @@ def sequencer2d_s_add(pretrained=False, **kwargs):
 
 @register_model
 def sequencer2d_s_h2x(pretrained=False, **kwargs):
+    '''Ablation experiment: 2x hidden size'''
     model_args = dict(
         layers=[4, 3, 8, 3],
         patch_sizes=[7, 2, 1, 1],
@@ -344,6 +346,7 @@ def sequencer2d_s_h2x(pretrained=False, **kwargs):
 
 @register_model
 def sequencer2d_s_without_fc(pretrained=False, **kwargs):
+    '''Ablation experiment: vertical and horizontal without channel fusion layer (C3)'''
     model_args = dict(
         layers=[4, 3, 8, 3],
         patch_sizes=[7, 2, 1, 1],
@@ -361,6 +364,7 @@ def sequencer2d_s_without_fc(pretrained=False, **kwargs):
 
 @register_model
 def sequencer2d_vertical(pretrained=False, **kwargs):
+    '''Ablation experiment: vertical BiLSTM (C1)'''
     model_args = dict(
         layers=[4, 3, 8, 3],
         patch_sizes=[7, 2, 1, 1],
@@ -378,6 +382,7 @@ def sequencer2d_vertical(pretrained=False, **kwargs):
 
 @register_model
 def sequencer2d_s_horizontal(pretrained=False, **kwargs):
+    '''Ablation experiment: horizontal BiLSTM (C2)'''
     model_args = dict(
         layers=[4, 3, 8, 3],
         patch_sizes=[7, 2, 1, 1],
@@ -397,6 +402,7 @@ def sequencer2d_s_horizontal(pretrained=False, **kwargs):
 
 @register_model
 def gru_sequencer2d_s(pretrained=False, **kwargs):
+    '''Ablation experiment: BiGRU2D with Gated Recurrent Units'''
     model_args = dict(
         layers=[4, 3, 8, 3],
         patch_sizes=[7, 2, 1, 1],
@@ -414,6 +420,7 @@ def gru_sequencer2d_s(pretrained=False, **kwargs):
 
 @register_model
 def rnn_sequencer2d_s(pretrained=False, **kwargs):
+    '''Ablation experiment: BiRNN2D with tanh-RNNs'''
     model_args = dict(
         layers=[4, 3, 8, 3],
         patch_sizes=[7, 2, 1, 1],
