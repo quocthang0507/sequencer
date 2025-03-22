@@ -16,6 +16,13 @@ Create a virtual environment:
 
 ```
 virtualenv venv --python=python3.11
+```
+Or:
+```
+python -m venv venv
+```
+Update Pip
+```
 python.exe -m pip install --upgrade pip
 ```
 
@@ -61,7 +68,7 @@ pip install -r requirements.txt
 Install missing packages from requirements.txt:
 
 ```
-pip install --upgrade clearml, scipy, deepspeed, pillow
+pip install --upgrade clearml scipy deepspeed pillow
 ```
 
 ## Optional
