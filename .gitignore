@@ -131,7 +131,5 @@ clearml.conf
 # Datasets
 datasets/
 
-#Output
-Output/
-
+*.tar
 *.pth
