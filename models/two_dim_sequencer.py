@@ -185,11 +185,11 @@ def _create_sequencer2d(variant, pretrained=False, **kwargs):
 @register_model
 def sequencer2d_s(pretrained=False, **kwargs):
     model_args = dict(
-        layers=[4, 3, 8, 3],
-        patch_sizes=[7, 2, 1, 1],
-        embed_dims=[192, 384, 384, 384],
-        hidden_sizes=[48, 96, 96, 96],
-        mlp_ratios=[3.0, 3.0, 3.0, 3.0],
+        layers=[4, 3, 8, 3], # A list indicating the number of layers in each stage of the model
+        patch_sizes=[7, 2, 1, 1], # The size of the patches processed at each stage
+        embed_dims=[192, 384, 384, 384], # The embedding dimensions for each stage, which define the size of the feature representation
+        hidden_sizes=[48, 96, 96, 96], # The hidden layer sizes for each stage, likely used in the recurrent layers.
+        mlp_ratios=[3.0, 3.0, 3.0, 3.0], # Ratios that control the size of the MLP (Multi-Layer Perceptron) layers relative to the embedding dimensions
         rnn_layer=LSTM2D,
         bidirectional=True,
         union="cat",
