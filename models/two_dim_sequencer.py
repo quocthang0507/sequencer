@@ -165,6 +165,8 @@ default_cfgs = dict(
     sequencer2d_s_horizontal=_cfg(),
     gru_sequencer2d_s=_cfg(),
     rnn_sequencer2d_s=_cfg(),
+    sequencer2d_s_no_dropout=_cfg(),
+    sequencer2d_s_high_mlp=_cfg(),
 )
 
 
@@ -450,4 +452,44 @@ def sequencer2d_l_d4_3x(pretrained=False, **kwargs):
         with_fc=True,
         **kwargs)
     model = _create_sequencer2d('sequencer2d_l_d4_3x', pretrained=pretrained, **model_args)
+    return model
+
+# New ablation experiments
+# These models are not in the paper, but are included for completeness.
+
+@register_model
+def sequencer2d_s_no_dropout(pretrained=False, **kwargs):
+    '''Ablation experiment: without dropout layers'''
+    model_args = dict(
+        layers=[4, 3, 8, 3],
+        patch_sizes=[7, 2, 1, 1],
+        embed_dims=[192, 384, 384, 384],
+        hidden_sizes=[48, 96, 96, 96],
+        mlp_ratios=[3.0, 3.0, 3.0, 3.0],
+        rnn_layer=LSTM2D,
+        bidirectional=True,
+        union="cat",
+        with_fc=True,
+        drop_rate=0.0,  # No dropout
+        drop_path_rate=0.0,  # No stochastic depth
+        **kwargs)
+    model = _create_sequencer2d('sequencer2d_s_no_dropout', pretrained=pretrained, **model_args)
+    return model
+
+
+@register_model
+def sequencer2d_s_high_mlp(pretrained=False, **kwargs):
+    '''Ablation experiment: increased MLP ratio'''
+    model_args = dict(
+        layers=[4, 3, 8, 3],
+        patch_sizes=[7, 2, 1, 1],
+        embed_dims=[192, 384, 384, 384],
+        hidden_sizes=[48, 96, 96, 96],
+        mlp_ratios=[4.0, 4.0, 4.0, 4.0],  # Increased MLP ratio
+        rnn_layer=LSTM2D,
+        bidirectional=True,
+        union="cat",
+        with_fc=True,
+        **kwargs)
+    model = _create_sequencer2d('sequencer2d_s_high_mlp', pretrained=pretrained, **model_args)
     return model
