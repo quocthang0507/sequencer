@@ -48,7 +48,7 @@ must_download = False
 device = "cuda:0"  # cuda:0 | cpu
 _logger = logging.getLogger('train')
 has_native_amp = False
-models = ['sequencer2d_s_no_dropout']
+models = ['sequencer2d_s_no_dropout', 'sequencer2d_s_add']
 
 
 def _parse_args(model: str):

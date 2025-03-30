@@ -460,6 +460,9 @@ def sequencer2d_l_d4_3x(pretrained=False, **kwargs):
 @register_model
 def sequencer2d_s_no_dropout(pretrained=False, **kwargs):
     '''Ablation experiment: without dropout layers'''
+    # Remove drop_rate and drop_path_rate from kwargs if they exist
+    kwargs.pop('drop_rate', None)
+    kwargs.pop('drop_path_rate', None)
     model_args = dict(
         layers=[4, 3, 8, 3],
         patch_sizes=[7, 2, 1, 1],
