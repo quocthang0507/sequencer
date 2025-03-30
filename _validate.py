@@ -276,7 +276,7 @@ def _parse_args():
 
 def main():
     setup_default_logging()
-    args = parser.parse_args()
+    args, args_text = _parse_args()
     model_cfgs = []
     model_names = []
     if os.path.isdir(args.checkpoint):
