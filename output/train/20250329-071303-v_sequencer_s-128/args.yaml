@@ -3,7 +3,7 @@ amp: false
 apex_amp: false
 aug_repeats: 0
 aug_splits: 0
-batch_size: 32
+batch_size: 16
 bce_loss: false
 bce_target_thesh: null
 bn_eps: null
@@ -58,7 +58,7 @@ mixup_mode: batch
 mixup_off_epoch: 0
 mixup_prob: 1.0
 mixup_switch_prob: 0.5
-model: rnn_sequencer2d_s
+model: v_sequencer_s
 model_ema: false
 model_ema_decay: 0.9998
 model_ema_force_cpu: false
@@ -111,5 +111,5 @@ warmup_epochs: 20
 warmup_lr: 1.0e-06
 weight_decay: 0.05
 worker_seeding: all
-workers: 1
+workers: 2
 world_size: 1
