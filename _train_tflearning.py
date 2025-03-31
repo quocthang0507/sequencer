@@ -56,10 +56,10 @@ def _parse_args(model: str):
     args = argparse.Namespace()
     if must_download:
         args.data_dir = "datasets"  # Directory to store the dataset
-        args.dataset = "torch/flowers"  # Dataset name
+        args.dataset = "torch/places365"  # Dataset name
         args.dataset_download = True  # Flag to download the dataset
     else:
-        args.data_dir = "datasets/102flowers"  # Directory to store the dataset
+        args.data_dir = "datasets/fgvc-aircraft"  # Directory to store the dataset
         args.dataset = ""  # Dataset name
         args.dataset_download = False  # Flag to download the dataset
     args.model = model  # Model name
@@ -67,6 +67,7 @@ def _parse_args(model: str):
     args.workers = 2  # Number of data loading workers, default = 4
     args.opt = "adamw"  # Optimizer type
     args.epochs = 200  # Number of epochs to train
+    args.pretrained = True  # Use pretrained model (default: False)
     args.sched = "cosine"  # Learning rate scheduler type
     args.native_amp = True  # Use native automatic mixed precision
     args.img_size = 128  # Image size, default = 224
@@ -76,6 +77,7 @@ def _parse_args(model: str):
     args.remode = "pixel"  # Random erase mode
     args.reprob = 0.25  # Random erase probability
     args.aa = "rand-m9-mstd0.5-inc1"  # AutoAugment policy
+    args.no_aug = False  # Disable all training augmentation (default: False)
     args.smoothing = 0.1  # Label smoothing
     args.mixup = 0.8  # Mixup alpha
     args.cutmix = 1.0  # Cutmix alpha
@@ -85,7 +87,6 @@ def _parse_args(model: str):
     # Additional default values
     args.validation_batch_size = None  # Validation batch size (default: None)
     args.recount = 1  # Random erase count (default: 1)
-    args.pretrained = True  # Use pretrained model (default: False)
     args.local_rank = 0  # Local rank for distributed training (default: 0)
     args.log_wandb = False  # Log metrics to wandb (default: False)
     args.log_clearml = False  # Log metrics to clearml (default: False)
@@ -142,7 +143,6 @@ def _parse_args(model: str):
     args.cooldown_epochs = 10  # Epochs to cooldown LR at min_lr (default: 10)
     args.patience_epochs = 10  # Patience epochs for Plateau LR scheduler (default: 10)
     args.decay_rate = 0.1  # LR decay rate (default: 0.1)
-    args.no_aug = False  # Disable all training augmentation (default: False)
     args.scale = [0.08, 1.0]  # Random resize scale (default: [0.08, 1.0])
     args.ratio = [3. / 4., 4. / 3.]  # Random resize aspect ratio (default: [3. / 4., 4. / 3.])
     args.hflip = 0.5  # Horizontal flip training aug probability (default: 0.5)
