@@ -29,10 +29,10 @@ _logger = logging.getLogger('validate')
 def _parse_args():
     args = argparse.Namespace()
     args.data = "datasets/imagenet"  # Path to dataset
-    args.model = "sequencer2d_l"  # Model architecture
+    args.model = "sequencer2d_s"  # Model architecture
     args.batch_size = 16  # Mini-batch size
     args.input_size = None  # Input image dimensions (channels, height, width)
-    args.amp = True  # Use AMP mixed precision
+    args.amp = False  # Use AMP mixed precision
     args.dataset = ""  # Dataset type (default: ImageFolder/ImageTar if empty)
     args.split = "validation"  # Dataset split
     args.dataset_download = False  # Disable dataset download
@@ -59,7 +59,7 @@ def _parse_args():
     args.use_ema = False  # Use EMA version of weights if present
     args.torchscript = False  # Convert model to TorchScript for inference
     args.legacy_jit = False  # Use legacy JIT mode for older PyTorch versions
-    args.results_file = "output/val/_val.txt"  # Output CSV file for validation results
+    args.results_file = ""  # Output CSV file for validation results
     args.real_labels = ""  # Real labels JSON file for ImageNet evaluation
     args.valid_labels = ""  # Valid label indices file for partial label space
     args.attack_type = None  # Attack type (e.g., 'fgsm', 'pgd')
