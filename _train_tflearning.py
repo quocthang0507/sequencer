@@ -59,7 +59,7 @@ def _parse_args(model: str):
         args.dataset = "torch/places365"  # Dataset name
         args.dataset_download = True  # Flag to download the dataset
     else:
-        args.data_dir = "datasets/fgvc-aircraft"  # Directory to store the dataset
+        args.data_dir = "datasets/food-101"  # Directory to store the dataset
         args.dataset = ""  # Dataset name
         args.dataset_download = False  # Flag to download the dataset
     args.model = model  # Model name
